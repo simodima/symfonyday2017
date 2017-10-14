@@ -1,5 +1,15 @@
 version: '3'
 services:
+  payment_consumer:
+    build: ./docker/payment-consumer
+    restart: always
+    command: 'sh -c "waitforit -host rabbitmq -port 5672 -timeout 20 && bin/console rabbitmq:consumer payment_consumer"'  
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./symfony:/var/www/symfony:cached
+    networks:
+      - back
 
   php:
     build: ./docker/php-fpm
@@ -20,6 +30,19 @@ services:
       - front
       - back
 
+  rabbitmq:
+    image: rabbitmq:3.6.1-management
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: "rabbit"
+      RABBITMQ_DEFAULT_PASS: "rabbit"
+      RABBITMQ_DEFAULT_VHOST: "/"
+    ports:
+      - 15672:15672
+      - 5672:5672
+    networks:
+      - back
+
   payment:
     restart: always
     image: node:6
@@ -31,6 +54,20 @@ services:
     working_dir: /app
     volumes:
       - ./payment:/app
+    networks:
+      - back
+
+  notifier:
+    restart: always
+    image: node:6
+    ports:
+      - 8001:8001
+    environment:
+        - PORT=8001
+    command: sh -c "npm install && node index.js"
+    working_dir: /app
+    volumes:
+      - ./notifier:/app
     networks:
       - back
 

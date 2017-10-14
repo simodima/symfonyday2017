@@ -7,6 +7,23 @@ services:
                 http_errors: false
         public: false
     
+    notifier.client:
+        class: GuzzleHttp\Client
+        arguments:
+            - 
+                base_uri: http://%notifier_gateway_host%:%notifier_gateway_port%/
+                http_errors: false
+        public: false
+    
+    notification.ws_notifier:
+        class: Notification\WSNotifier
+        arguments: ['@notifier.client']
+
+    payment.consumer:
+        class: Consumer\PaymentConsumer
+        arguments: ['@payment.pay.sync', '@notification.ws_notifier']
+        public: false
+
     payment.form.factory:
         class: AppBundle\Form\PaymentFormFactory
         arguments: ['@form.factory']
@@ -14,6 +31,10 @@ services:
     payment.pay.sync:
         class: Payment\SyncPayment
         arguments: ['@payment.client']
+
+    payment.pay.async:
+        class: Payment\AsyncPayment
+        arguments: ['@payment.producer']
 
     AppBundle\Controller\:
         resource: '../../src/AppBundle/Controller'
