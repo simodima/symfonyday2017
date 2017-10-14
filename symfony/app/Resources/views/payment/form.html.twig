@@ -1,0 +1,25 @@
+<div class="row">
+    <div class="col-12 col-md-9">
+        {{ form_start(form, {attr: { class: 'form-inline'}}) }}
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-addon">
+                        <i class="fa fa-credit-card-alt" aria-hidden="true"></i>
+                    </div>
+                    {{ form_widget(form.credit_card, {attr: {class: 'input-lg' }}) }}
+                    <div class="input-group-addon">
+                        <i id="loader" class="fa fa-cog fa-2x fa-fw" aria-hidden="true"></i>
+                    </div>
+                </div>
+            </div>
+            {{ form_widget(form.submit, {attr: { class: 'btn-lg btn-primary'}}) }}
+            {{ form_rest(form) }}   
+        {{ form_end(form) }}
+        
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 col-md-9">
+        <div id="logger"></div>
+    </div>
+</div>
