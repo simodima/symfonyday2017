@@ -25,3 +25,29 @@ framework:
 twig:
     form_themes:
         - bootstrap_3_layout.html.twig
+
+old_sound_rabbit_mq:
+    connections:
+        default:
+            host:     'rabbitmq'
+            port:     5672
+            user:     'rabbit'
+            password: 'rabbit'
+            vhost:    '/'
+            lazy:     false
+            connection_timeout: 3
+            read_write_timeout: 3
+
+    producers:
+        payment_producer:
+            connection:       default
+            exchange_options: {name: 'symfonyday', type: direct}
+            queue_options:    {name: 'payment'}
+            service_alias:    payment.producer
+
+    consumers:
+        payment_consumer:
+            connection:       default
+            exchange_options: {name: 'symfonyday', type: direct}
+            queue_options:    {name: 'payment'}
+            callback:         payment.consumer
