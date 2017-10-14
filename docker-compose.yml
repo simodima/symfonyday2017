@@ -1,0 +1,39 @@
+version: '3'
+services:
+
+  php:
+    build: ./docker/php-fpm
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./symfony:/var/www/symfony
+    networks:
+      - back
+
+  nginx:
+    build: ./docker/nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./symfony:/var/www/symfony:cached
+    networks:
+      - front
+      - back
+
+  payment:
+    restart: always
+    image: node:6
+    ports:
+      - 8000:8000
+    environment:
+        - PORT=8000
+    command: sh -c "npm install && node index.js"
+    working_dir: /app
+    volumes:
+      - ./payment:/app
+    networks:
+      - back
+
+networks:
+  front:
+  back:

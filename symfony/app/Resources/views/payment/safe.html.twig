@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+     {% include 'payment/form.html.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var client = new WebSocket("ws://localhost:8001/open");
+        client.onmessage = function (event) {
+            let data = JSON.parse(event.data)
+            if (data.id) {
+                $('#form_channel').val(data.id)
+            } else {
+                log(`Notification received ${event.data}`)
+                
+            }
+        }
+
+        let form = $('form[name=form]')
+        $('#form_credit_card').val(getRandomCC())
+        $('#form_submit').click((e) => {
+            e.preventDefault()
+            $(e.currentTarget).prop('disabled', true);
+            $('#loader').addClass('fa-spin');
+            let cc = $('#form_credit_card').val()
+            $.post({
+                url: '/queue-payment',
+                data: form.serialize(),
+                success: (responseData, result, { status }) => {
+                    log(`Payment submitted [code:${status}]`)
+                    $('#form_credit_card').val(getRandomCC())
+                    $('#loader').removeClass('fa-spin');
+                    $(e.currentTarget).prop('disabled', false);
+                },
+            })
+        })
+        
+    </script>
+{% endblock %}
+

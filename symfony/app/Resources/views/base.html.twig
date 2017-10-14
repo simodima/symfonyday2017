@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        {% block stylesheets %}
+            <link href="{{ asset('bundles/app/css/bootstrap.min.css') }}" rel="stylesheet" crossorigin="anonymous">
+            <link href="{{ asset('bundles/app/css/font-awesome.min.css') }}" rel="stylesheet" crossorigin="anonymous">
+        {% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    </head>
+    <body>
+        {% block body %}
+            <div class="container">    
+                {% include 'navbar.html.twig' %}    
+                <div class="jumbotron">
+                    {% block content %}{% endblock %}
+                </div>        
+            </div>
+        {% endblock %}
+        {% block javascripts %}
+            <script src="{{ asset('bundles/app/js/jquery.js') }}"></script>
+            <script>
+                let getRandomCC = () => (Math.random() * 9999999999).toFixed()
+                let log = (text) => {
+                    $("#logger").append(
+                        $("<p></p>").text(text)
+                    )
+                }
+            </script>
+        {% endblock %}
+    </body>
+</html>

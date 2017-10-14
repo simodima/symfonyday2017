@@ -1,0 +1,21 @@
+services:
+    payment.client:
+        class: GuzzleHttp\Client
+        arguments:
+            - 
+                base_uri: http://%payment_gateway_host%:%payment_gateway_port%/
+                http_errors: false
+        public: false
+    
+    payment.form.factory:
+        class: AppBundle\Form\PaymentFormFactory
+        arguments: ['@form.factory']
+
+    payment.pay.sync:
+        class: Payment\SyncPayment
+        arguments: ['@payment.client']
+
+    AppBundle\Controller\:
+        resource: '../../src/AppBundle/Controller'
+        public: true
+        tags: ['controller.service_arguments']

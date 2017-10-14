@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    {% include 'payment/form.html.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        let form = $('form[name=form]')
+        $('#form_credit_card').val(getRandomCC())
+        $('#form_submit').click((e) => {
+            e.preventDefault()
+            $(e.currentTarget).prop('disabled', true);
+            $('#loader').addClass('fa-spin');
+            let cc = $('#form_credit_card').val()
+            $.post({
+                url: '/pay',
+                data: form.serialize(),
+                error: ({ responseJSON: { statusCode, message}}) => {
+                    log(`Payment with CC ${cc} ${message} [code:${statusCode}]`)
+                    $('#loader').removeClass('fa-spin');
+                    $(e.currentTarget).prop('disabled', false);
+                },
+                success: (responseData, result, { status }) => {
+                    log(`Payment with CC ${cc} ${result} [code:${status}]`)
+                    $('#form_credit_card').val(getRandomCC())
+                    $('#loader').removeClass('fa-spin');
+                    $(e.currentTarget).prop('disabled', false);
+                },
+            })
+        })
+        
+    </script>
+{% endblock %}
+
