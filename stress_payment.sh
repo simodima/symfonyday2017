@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-NUM_REQ=1000
+NUM_REQ=100
 
 # Should terminate all calls at ctrl-c
 while true 

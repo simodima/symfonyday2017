@@ -9,6 +9,7 @@ server.connection({port: process.env.PORT || 8000});
 server.register({
     register: require('hapi-rate-limit'),
     options: {
+        pathLimit: 10,
         userLimit: 20,
         userCache: {
             expiresIn: 1000 * 10 // 10 secs

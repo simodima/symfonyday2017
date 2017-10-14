@@ -41,13 +41,24 @@ old_sound_rabbit_mq:
     producers:
         payment_producer:
             connection:       default
-            exchange_options: {name: 'symfonyday', type: direct}
-            queue_options:    {name: 'payment'}
+            exchange_options: {name: 'symfonyday', type: direct}    
+            queue_options:    
+                name: 'payment_safe'
             service_alias:    payment.producer
+
+        delay_producer:
+            connection:       default
+            exchange_options: {name: 'dead_letter', type: fanout}    
+            queue_options:
+                name: 'dead_letter'
+                arguments:
+                    'x-dead-letter-exchange': ['S', 'symfonyday']
+            service_alias:    delay.producer
 
     consumers:
         payment_consumer:
             connection:       default
             exchange_options: {name: 'symfonyday', type: direct}
-            queue_options:    {name: 'payment'}
             callback:         payment.consumer
+            queue_options:    
+                name: 'payment_safe'

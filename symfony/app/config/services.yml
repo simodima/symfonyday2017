@@ -21,7 +21,7 @@ services:
 
     payment.consumer:
         class: Consumer\PaymentConsumer
-        arguments: ['@payment.pay.sync', '@notification.ws_notifier']
+        arguments: ['@payment.pay.sync', '@notification.ws_notifier', '@delay.producer', '@logger']
         public: false
 
     payment.form.factory:
